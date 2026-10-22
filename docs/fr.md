@@ -35,7 +35,15 @@ Privilégiez un VPN (WireGuard/Tailscale) ou un reverse proxy HTTPS. Ne redirige
 
 ## Accès à une VM
 
-Pi-Lo ne fournit pas lui-même un bureau virtuel. Installez une passerelle telle qu'Apache Guacamole ou noVNC, protégez-la par HTTPS et une authentification propre, puis configurez `VM_CONSOLE_URL` dans `.env`. Redémarrez le service après modification.
+Pi-Lo affiche le bureau distant dans un cadre intégré, avec un bouton pour l’ouvrir dans un nouvel onglet. Il ne crée pas lui-même le serveur de bureau :
+
+1. Installez Apache Guacamole (recommandé pour RDP/VNC) ou noVNC sur une machine qui peut joindre la VM.
+2. Configurez la connexion vers le bureau cible dans la passerelle (RDP pour Windows, VNC pour un bureau Linux compatible).
+3. Protégez la passerelle par HTTPS, son authentification propre et, idéalement, un VPN. N'exposez jamais directement les ports VNC/RDP sur Internet.
+4. Définissez `VM_CONSOLE_URL=https://votre-passerelle.example/` dans `.env`, en utilisant l’URL de lancement réelle de la connexion.
+5. Redémarrez Pi-Lo avec `sudo systemctl restart pi-lo`.
+
+Pour l’affichage intégré, la passerelle doit autoriser l’intégration iframe depuis l’origine Pi-Lo. Si elle la bloque, utilisez le bouton d’ouverture dans un nouvel onglet.
 
 ## Service systemd
 
