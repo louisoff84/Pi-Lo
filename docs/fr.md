@@ -56,3 +56,8 @@ Le fichier de service complet se trouve dans le README. Vérifiez les chemins et
 - Vérifiez que Node.js 20+ est installé.
 - Vérifiez que `.env` contient `SESSION_SECRET` et `ADMIN_PASSWORD_HASH`.
 - Si le cookie de session ne fonctionne pas, confirmez que vous accédez au site en HTTPS en production.
+
+
+## Guide front-end noVNC
+
+Le guide détaillé pour installer et configurer noVNC, relier son URL à Pi-Lo, activer HTTPS et dépanner l’affichage dans l’iframe est disponible dans [docs/NOVNC.md](NOVNC.md).
