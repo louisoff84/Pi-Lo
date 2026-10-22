@@ -25,7 +25,7 @@ app.disable("x-powered-by");
 app.use(helmet({ contentSecurityPolicy: { directives: {
   defaultSrc: ["'self'"], scriptSrc: ["'self'"], styleSrc: ["'self'", "'unsafe-inline'"],
   imgSrc: ["'self'", "data:"], connectSrc: ["'self'", "ws:", "wss:"], objectSrc: ["'none'"],
-  frameAncestors: ["'self'"], upgradeInsecureRequests: null
+  frameAncestors: ["'self'"], frameSrc: ["'self'", "https:"], upgradeInsecureRequests: null
 }}}));
 app.use(express.json({ limit: "10kb" }));
 app.use(rateLimit({ windowMs: 15 * 60 * 1000, limit: 300, standardHeaders: true, legacyHeaders: false }));
