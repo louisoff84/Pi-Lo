@@ -10,7 +10,7 @@ const path = require("path");
 
 const app = express();
 const HOST = process.env.HOST || "127.0.0.1";
-const PORT = Number(process.env.PORT || 6943);
+const PORT = Number(process.env.PORT || 6944);
 const secret = process.env.SESSION_SECRET;
 if (!secret || secret.length < 32) {
   console.error("SESSION_SECRET must be set to a random value of at least 32 characters.");
