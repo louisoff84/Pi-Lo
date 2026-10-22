@@ -35,7 +35,15 @@ Se recomienda una VPN (WireGuard/Tailscale) o un proxy inverso HTTPS. No exponga
 
 ## Acceso a una VM
 
-Pi-Lo no incluye un escritorio virtual propio. Configura una pasarela como Apache Guacamole o noVNC, protégela con HTTPS y autenticación independiente y define `VM_CONSOLE_URL` en `.env`. Reinicia el servicio después de cambiar la configuración.
+Pi-Lo muestra el escritorio remoto dentro del panel y permite abrirlo en una pestaña nueva. No ejecuta el servidor de escritorio por sí mismo:
+
+1. Instala Apache Guacamole (recomendado para RDP/VNC) o noVNC en un host que pueda conectarse a la VM.
+2. Configura la conexión al escritorio de destino (RDP para Windows; un servidor VNC compatible para Linux).
+3. Protege la pasarela con HTTPS, autenticación propia y, preferiblemente, una VPN. No expongas los puertos VNC/RDP directamente a Internet.
+4. Define `VM_CONSOLE_URL=https://tu-pasarela.example/` en `.env`, con la URL real para iniciar la conexión.
+5. Reinicia Pi-Lo con `sudo systemctl restart pi-lo`.
+
+Para mostrar el escritorio integrado, la pasarela debe permitir iframes desde el origen de Pi-Lo. Si lo bloquea, utiliza el botón para abrir una pestaña nueva.
 
 ## Servicio systemd
 
