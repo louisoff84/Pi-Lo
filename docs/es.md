@@ -27,7 +27,7 @@ Genera un hash bcrypt para la contraseña:
 node -e "const b=require('bcryptjs'); console.log(b.hashSync(process.argv[1],12))" 'TU_CONTRASEÑA_SEGURA'
 ```
 
-Añade los valores a `.env` y ejecuta `npm start`. Por defecto, Pi-Lo escucha en `127.0.0.1:6943`.
+Añade los valores a `.env` y ejecuta `npm start`. Por defecto, Pi-Lo escucha en `127.0.0.1:6944`.
 
 ## Acceso remoto
 
