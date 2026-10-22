@@ -17,7 +17,6 @@
     "express": "^4.21.2",
     "express-rate-limit": "^7.5.0",
     "helmet": "^8.0.0",
-    "systeminformation": "^5.25.11",
-    "ws": "^8.18.0"
+    "systeminformation": "^5.25.11"
   }
 }
