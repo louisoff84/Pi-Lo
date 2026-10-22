@@ -95,6 +95,10 @@ Pi-Lo displays the configured remote desktop inside the dashboard and also provi
 
 Pi-Lo accepts HTTPS URLs or same-origin URLs. The gateway must permit iframe embedding for the embedded view to work; if it blocks framing, use the “Open in new tab” fallback or adjust the gateway's frame policy only for your trusted Pi-Lo origin. Authentication remains managed by the gateway.
 
+## Front-end and noVNC setup
+
+See [docs/NOVNC.md](docs/NOVNC.md) for a step-by-step guide to connecting noVNC to Pi-Lo, configuring HTTPS/WebSocket proxying, and troubleshooting iframe embedding.
+
 ## Languages
 
 Use the language selector in the sidebar: Français (FR), English (EN), Español (ES).
