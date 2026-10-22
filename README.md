@@ -44,7 +44,7 @@ Start:
 npm start
 ```
 
-Open `http://127.0.0.1:6943` locally. For remote access, prefer WireGuard/Tailscale or a reverse proxy with HTTPS. Do not port-forward port 6943 directly to the public Internet.
+Open `http://127.0.0.1:6944` locally. For remote access, prefer WireGuard/Tailscale or a reverse proxy with HTTPS. Do not port-forward port 6944 directly to the public Internet.
 
 ## Run as a systemd service
 
