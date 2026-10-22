@@ -1,0 +1,117 @@
+# Pi-Lo
+
+**Pi-Lo** is a lightweight, multilingual Raspberry Pi management dashboard inspired by the idea of a personal remote-control panel. It is designed to run on modest hardware such as a Raspberry Pi 3 A+.
+
+- System overview: CPU, memory, temperature, uptime and disk usage
+- Read-only process monitor
+- Password-protected session and rate-limited login
+- Optional link to a separately secured VM console (Apache Guacamole/noVNC)
+- French, English and Spanish interface
+- Responsive web interface
+- Express/Node.js backend
+
+> **Important:** Pi-Lo does not magically create remote VM access. To control a VM, configure a remote console gateway (for example Apache Guacamole or noVNC) separately, secure it with HTTPS and its own authentication, and set `VM_CONSOLE_URL`. Pi-Lo itself does not expose a shell or start/stop arbitrary processes.
+
+## Requirements
+
+- Raspberry Pi OS or another Linux distribution
+- Node.js 20 or newer
+- Network access to install npm dependencies
+
+## Installation
+
+```bash
+sudo apt update
+sudo apt install -y nodejs npm
+git clone https://github.com/louisoff84/Pi-Lo.git
+cd Pi-Lo
+npm install
+cp .env.example .env
+```
+
+Generate a session secret and password hash:
+
+```bash
+node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"
+node -e "const b=require('bcryptjs'); console.log(b.hashSync(process.argv[1],12))" 'REPLACE_WITH_A_STRONG_PASSWORD'
+``
+
+Edit `.env`, paste the generated values into `SESSION_SECRET` and `ADMIN_PASSWORD_HASH`. Set `HOST=127.0.0.1` if using a local reverse proxy; use `HOST=0.0.0.0` only if you intentionally want LAN access and have configured the firewall. In production, HTTPS is required for secure session cookies.
+
+Start:
+
+```bash
+npm start
+```
+
+Open `http://127.0.0.1:6943` locally. For remote access, prefer WireGuard/Tailscale or a reverse proxy with HTTPS. Do not port-forward port 6943 directly to the public Internet.
+
+## Run as a systemd service
+
+Create `/etc/systemd/system/pi-lo.service` (adjust the directory and user):
+
+```ini
+[Unit]
+Description=Pi-Lo Raspberry Pi Dashboard
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=louis
+WorkingDirectory=/home/louis/Pi-Lo
+Environment=NODE_ENV=production
+EnvironmentFile=/home/louis/Pi-Lo/.env
+ExecStart=/usr/bin/node /home/louis/Pi-Lo/server.js
+Restart=on-failure
+RestartSec=3
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Then:
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable --now pi-lo
+sudo systemctl status pi-lo
+journalctl -u pi-lo -f
+```
+
+## VM console
+
+1. Install and configure Apache Guacamole or noVNC separately on the host that can reach the VM.
+2. Publish that gateway only through HTTPS and enforce its own strong authentication.
+3. Set `VM_CONSOLE_URL=https://your-secure-console.example/` in `.env`.
+4. Restart Pi-Lo: `sudo systemctl restart pi-lo`.
+
+Pi-Lo validates that the configured URL uses HTTPS or the same origin before showing the link. The VM console is a separate application and its access permissions must be managed there.
+
+## Languages
+
+Use the language selector in the sidebar: Français (FR), English (EN), Español (ES).
+
+## Security notes
+
+- Use a unique, long password and a random session secret.
+- Keep Node.js and dependencies updated.
+- Use a VPN or HTTPS reverse proxy for remote access.
+- Keep the app bound to localhost when using a reverse proxy.
+- Do not expose VNC/RDP/SSH ports directly to the Internet.
+- The current process page is read-only; no process-kill or shell endpoint is provided.
+- The default in-memory Express session store is suitable for a small personal setup, not a large or multi-instance deployment. For a public multi-user deployment, use a persistent session store and review the deployment configuration.
+
+## Documentation
+
+- [Français](docs/fr.md)
+- [English](docs/en.md)
+- [Español](docs/es.md)
+
+## License
+
+MIT — see [LICENSE](LICENSE).
