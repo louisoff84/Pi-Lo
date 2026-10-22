@@ -27,7 +27,7 @@ Générez un hash bcrypt du mot de passe :
 node -e "const b=require('bcryptjs'); console.log(b.hashSync(process.argv[1],12))" 'VOTRE_MOT_DE_PASSE_FORT'
 ``
 
-Renseignez les valeurs dans `.env`, puis lancez `npm start`. Par défaut, le service écoute sur `127.0.0.1:6943`.
+Renseignez les valeurs dans `.env`, puis lancez `npm start`. Par défaut, le service écoute sur `127.0.0.1:6944`.
 
 ## Accès distant
 
