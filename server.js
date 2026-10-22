@@ -23,8 +23,8 @@ if (!process.env.ADMIN_PASSWORD_HASH) {
 if (process.env.TRUST_PROXY === "1") app.set("trust proxy", 1);
 app.disable("x-powered-by");
 app.use(helmet({ contentSecurityPolicy: { directives: {
-  defaultSrc: ["'self'"], scriptSrc: ["'self'"], styleSrc: ["'self'", "'unsafe-inline'"],
-  imgSrc: ["'self'", "data:"], connectSrc: ["'self'", "ws:", "wss:"], objectSrc: ["'none'"],
+  defaultSrc: ["'self'"], scriptSrc: ["'self'"], styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+  fontSrc: ["'self'", "https://fonts.gstatic.com", "data:"], imgSrc: ["'self'", "data:"], connectSrc: ["'self'", "ws:", "wss:"], objectSrc: ["'none'"],
   frameAncestors: ["'self'"], frameSrc: ["'self'", "https:"], upgradeInsecureRequests: null
 }}}));
 app.use(express.json({ limit: "10kb" }));
