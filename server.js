@@ -6,13 +6,9 @@ const session = require("express-session");
 const bcrypt = require("bcryptjs");
 const os = require("os");
 const si = require("systeminformation");
-const fs = require("fs");
 const path = require("path");
-const http = require("http");
-const { WebSocketServer } = require("ws");
 
 const app = express();
-const server = http.createServer(app);
 const HOST = process.env.HOST || "127.0.0.1";
 const PORT = Number(process.env.PORT || 6943);
 const secret = process.env.SESSION_SECRET;
@@ -76,35 +72,4 @@ app.get("/api/health", (req,res) => res.json({ok:true}));
 app.use(express.static(path.join(__dirname,"public"), {index:"index.html", maxAge:process.env.NODE_ENV==="production"?"1h":0}));
 app.get("*", (req,res) => res.sendFile(path.join(__dirname,"public","index.html")));
 
-const wss = new WebSocketServer({ noServer:true, maxPayload:1024 });
-server.on("upgrade",(req,socket,head)=>{
-  if (req.url !== "/ws/stats") return socket.destroy();
-  const sid = (req.headers.cookie||"").split(";").map(v=>v.trim()).find(v=>v.startsWith("pilo.sid="))?.slice(9);
-  if (!sid) return socket.destroy();
-  // Validate session through Express session store before accepting WebSocket.
-  app.get("session middleware")(req, {}, ()=>{});
-  sessionMiddleware(req, {}, ()=>{});
-});
-const sessionMiddleware = session({
-  name:"pilo.sid", secret, resave:false, saveUninitialized:false
-});
-server.removeAllListeners("upgrade");
-server.on("upgrade",(req,socket,head)=>{
-  if (req.url !== "/ws/stats") return socket.destroy();
-  sessionMiddleware(req, {}, ()=>{
-    if (!req.session?.authenticated) return socket.destroy();
-    wss.handleUpgrade(req,socket,head,ws=>wss.emit("connection",ws,req));
-  });
-});
-wss.on("connection",ws=>{
-  let busy=false;
-  const send=async()=>{
-    if(busy||ws.readyState!==1)return; busy=true;
-    try {
-      const [load,mem,temp]=await Promise.all([si.currentLoad(),si.mem(),si.cpuTemperature()]);
-      ws.send(JSON.stringify({type:"stats",cpu:Math.round(load.currentLoad||0),memory:Math.round(mem.active/mem.total*100),temperature:temp.main||null,uptime:os.uptime()}));
-    }catch{} finally{busy=false;}
-  };
-  send(); const timer=setInterval(send,3000); ws.on("close",()=>clearInterval(timer));
-});
-server.listen(PORT,HOST,()=>console.log(`Pi-Lo listening on http://${HOST}:${PORT}`));
+app.listen(PORT,HOST,()=>console.log(`Pi-Lo listening on http://${HOST}:${PORT}`));
