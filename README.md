@@ -5,12 +5,12 @@
 - System overview: CPU, memory, temperature, uptime and disk usage
 - Read-only process monitor
 - Password-protected session and rate-limited login
-- Optional link to a separately secured VM console (Apache Guacamole/noVNC)
+- Embedded remote desktop/VM console (Apache Guacamole or noVNC), with a fallback link in a new tab
 - French, English and Spanish interface
 - Responsive web interface
 - Express/Node.js backend
 
-> **Important:** Pi-Lo does not magically create remote VM access. To control a VM, configure a remote console gateway (for example Apache Guacamole or noVNC) separately, secure it with HTTPS and its own authentication, and set `VM_CONSOLE_URL`. Pi-Lo itself does not expose a shell or start/stop arbitrary processes.
+> **Important:** Pi-Lo does not magically create remote VM access. To control a VM, configure a remote console gateway (for example Apache Guacamole or noVNC) separately, secure it with HTTPS and its own authentication, and set `VM_CONSOLE_URL`. Pi-Lo itself does not expose a shell or start/stop arbitrary processes. The remote desktop is provided by a separately installed gateway; it is not a built-in VNC/RDP server.
 
 ## Requirements
 
@@ -83,14 +83,17 @@ sudo systemctl status pi-lo
 journalctl -u pi-lo -f
 ```
 
-## VM console
+## Remote desktop / VM console
 
-1. Install and configure Apache Guacamole or noVNC separately on the host that can reach the VM.
-2. Publish that gateway only through HTTPS and enforce its own strong authentication.
-3. Set `VM_CONSOLE_URL=https://your-secure-console.example/` in `.env`.
-4. Restart Pi-Lo: `sudo systemctl restart pi-lo`.
+Pi-Lo displays the configured remote desktop inside the dashboard and also provides a fallback link to open it in a new tab. The actual desktop transport is handled by a gateway, not by Pi-Lo itself.
 
-Pi-Lo validates that the configured URL uses HTTPS or the same origin before showing the link. The VM console is a separate application and its access permissions must be managed there.
+1. Install and configure **Apache Guacamole** (recommended for RDP/VNC desktops) or **noVNC** on a host that can reach the VM.
+2. Configure a connection to the target VM/desktop in that gateway. For Windows, use RDP through Guacamole; for Linux, configure a VNC server on the desktop host.
+3. Publish the gateway only through HTTPS, enable its own authentication, and restrict access with a VPN where possible. Never expose raw VNC/RDP ports to the Internet.
+4. Put the gateway's actual launch URL in `.env`, for example `VM_CONSOLE_URL=https://remote.example.com/`.
+5. Restart Pi-Lo: `sudo systemctl restart pi-lo`.
+
+Pi-Lo accepts HTTPS URLs or same-origin URLs. The gateway must permit iframe embedding for the embedded view to work; if it blocks framing, use the “Open in new tab” fallback or adjust the gateway's frame policy only for your trusted Pi-Lo origin. Authentication remains managed by the gateway.
 
 ## Languages
 
