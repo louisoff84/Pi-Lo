@@ -27,7 +27,7 @@ Generate a bcrypt password hash:
 node -e "const b=require('bcryptjs'); console.log(b.hashSync(process.argv[1],12))" 'YOUR_STRONG_PASSWORD'
 ```
 
-Put the generated values in `.env`, then run `npm start`. By default, Pi-Lo listens on `127.0.0.1:6943`.
+Put the generated values in `.env`, then run `npm start`. By default, Pi-Lo listens on `127.0.0.1:6944`.
 
 ## Remote access
 
